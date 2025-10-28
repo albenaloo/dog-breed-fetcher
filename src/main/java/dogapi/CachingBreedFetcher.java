@@ -26,11 +26,20 @@ public class CachingBreedFetcher implements BreedFetcher {
             return calls_list.get(breed);
         }
         else {
-            BreedFetcher fetcher = new DogApiBreedFetcher();
-            List<String> subBreeds = fetcher.getSubBreeds(breed);
-            calls_list.put(breed, subBreeds);
-            callsMade++;
-            return subBreeds;
+            try {
+                BreedFetcherForLocalTesting mock = new BreedFetcherForLocalTesting();
+                List<String> subBreeds = mock.getSubBreeds(breed);
+
+                calls_list.put(breed, subBreeds);
+                callsMade++;
+                return subBreeds;
+            }
+            catch(BreedNotFoundException e) {
+                callsMade++;
+                calls_list.remove(breed);
+                throw new BreedNotFoundException(breed);
+            }
+
         }
     }
 
