@@ -14,9 +14,10 @@ import java.util.*;
  */
 public class CachingBreedFetcher implements BreedFetcher {
     private int callsMade = 0;
+    private BreedFetcher fetcher;
     private HashMap<String, List<String>> calls_list = new HashMap<>();
     public CachingBreedFetcher(BreedFetcher fetcher) {
-
+        this.fetcher = fetcher;
     }
 
     @Override
@@ -28,7 +29,7 @@ public class CachingBreedFetcher implements BreedFetcher {
         else {
             try {
                 BreedFetcherForLocalTesting mock = new BreedFetcherForLocalTesting();
-                List<String> subBreeds = mock.getSubBreeds(breed);
+                List<String> subBreeds = fetcher.getSubBreeds(breed);
 
                 calls_list.put(breed, subBreeds);
                 callsMade++;
